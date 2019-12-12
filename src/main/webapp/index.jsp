@@ -62,7 +62,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" >
                         <label class="col-sm-2 control-label">deptName</label>
                         <div class="col-sm-4">
                             <!-- 部门不是写死，从数据库查询。部门提交部门id即可 -->
@@ -70,8 +70,6 @@
                             </select>
                         </div>
                     </div>
-
-
                 </form>
             </div>
             <div class="modal-footer">
@@ -128,33 +126,7 @@
         <div class="col-md-6" id="page_nav_area">
             <nav aria-label="Page navigation">
                 <ul class="pagination">
-                    <%--                    <li><a href="${APP_PATH}/emps?pn=1">首页</a></li>--%>
-                    <%--                    <c:if test="${pageInfo.hasPreviousPage}">--%>
-                    <%--                        <li>--%>
-                    <%--                            <a href="${APP_PATH}/emps?pn=${pageInfo.pageNum-1}" aria-label="Previous">--%>
-                    <%--                                <span aria-hidden="true">&laquo;</span>--%>
-                    <%--                            </a>--%>
-                    <%--                        </li>--%>
-                    <%--                    </c:if>--%>
 
-
-                    <%--                    <c:forEach items="${pageInfo.navigatepageNums}" var="page_Num">--%>
-                    <%--                        <c:if test="${page_Num == pageInfo.pageNum}">--%>
-                    <%--                            <li class="active"><a href="#">${page_Num}</a></li>--%>
-                    <%--                        </c:if>--%>
-                    <%--                        <c:if test="${page_Num != pageInfo.pageNum}">--%>
-                    <%--                            <li><a href="${APP_PATH}/emps?pn=${page_Num}">${page_Num}</a></li>--%>
-                    <%--                        </c:if>--%>
-                    <%--                    </c:forEach>--%>
-                    <%--                    <c:if test="${pageInfo.hasNextPage}">--%>
-                    <%--                        <li>--%>
-                    <%--                            <a href="${APP_PATH}/emps?pn=${pageInfo.pageNum+1}" aria-label="Next">--%>
-                    <%--                                <span aria-hidden="true">&raquo;</span>--%>
-                    <%--                            </a>--%>
-                    <%--                        </li>--%>
-                    <%--                    </c:if>--%>
-
-                    <%--                    <li><a href="${APP_PATH}/emps?pn=${pageInfo.pages}">末页</a></li>--%>
                 </ul>
             </nav>
         </div>
@@ -278,12 +250,30 @@
         var navEle = $("<nav></nav>").append(ul);
         navEle.appendTo("#page_nav_area");
     }
-
+    // 点击新增按钮，弹出模态框
     $("#emp_add_modal_btn").click(function () {
+        // 发送Ajax请求，查出部门信息显示在下拉列表中
+        getDepts("#empAddModal select");
+        // 打开用于新增的模态框，并设置属性，点击其他地方时此模态框不会关闭
         $("#empAddModal").modal({
             backdrop: "static"
         })
-    })
+    });
+    // 查出所有的部门信息并显示在下拉列表中
+    function getDepts() {
+        $.ajax({
+            url:"${APP_PATH}/depts",
+            type: "GET",
+            success:function (result) {
+                // 在下拉列表中显示部门信息
+                // 遍历部门信息
+                $.each(result.extend.depts,function () {
+                    var optionEle = $("<option></option>").append(this.deptName).attr("value",this.deptId);
+                    optionEle.appendTo("#empAddModal select");
+                });
+            }
+        });
+    }
 </script>
 </body>
 </html>
