@@ -74,7 +74,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-primary" id="emp_save_btn">保存</button>
             </div>
         </div>
     </div>
@@ -133,8 +133,11 @@
     </div>
 </div>
 <script type="text/javascript">
+    // 定义全局变量，显示总记录数
+    var totalRecord;
     // 页面加载完成以后，发送Ajax请求，要到分页数据
     $(function () {
+        // 跳到首页
         to_page(1);
     });
 
@@ -188,7 +191,8 @@
     function build_page_info(result) {
         $("#page_info_area").empty();
         $("#page_info_area").append("当前 " + result.extend.pageInfo.pageNum + " 页，" +
-            "总 " + result.extend.pageInfo.pages + " 页，总 " + result.extend.pageInfo.total + " 条记录")
+            "总 " + result.extend.pageInfo.pages + " 页，总 " + result.extend.pageInfo.total + " 条记录");
+        totalRecord = result.extend.pageInfo.total;
     }
 
     // 解析显示分页导航条
@@ -253,7 +257,7 @@
     // 点击新增按钮，弹出模态框
     $("#emp_add_modal_btn").click(function () {
         // 发送Ajax请求，查出部门信息显示在下拉列表中
-        getDepts("#empAddModal select");
+        getDepts();
         // 打开用于新增的模态框，并设置属性，点击其他地方时此模态框不会关闭
         $("#empAddModal").modal({
             backdrop: "static"
@@ -274,6 +278,28 @@
             }
         });
     }
+
+    // 保存
+    $("#emp_save_btn").click(function () {
+        // 将模态框中提交的表单数据提交给服务器进行保存
+        // 发送Ajax请求保存员工
+        $.ajax({
+            url:"${APP_PATH}/emp",
+            type:"POST",
+            // $("#empAddModal form").serialize() 提取要提交的数据
+            data:$("#empAddModal form").serialize(),
+            success:function (result) {
+                // 当员工的数据保存成功以后，需要以下的步骤
+                // 1.关闭模态框
+                $("#empAddModal").modal('hide');
+                // 2.跳到最后一页，显示保存的数据
+                // 发送Ajax请求，显示最后一页数据即可
+                to_page(totalRecord);
+
+            }
+        });
+
+    });
 </script>
 </body>
 </html>
