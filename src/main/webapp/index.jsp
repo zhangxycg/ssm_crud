@@ -279,9 +279,34 @@
         });
     }
 
-    // 保存
+    // 校验表单数据的方法
+    function validate_add_form() {
+        // 1.拿到需要校验的数据，使用Jquery里面的正则表达式
+        var empName = $("#empName_add_input").val();
+        // 允许出现a-z、A-Z、0-9、_、- ,长度为6-16位
+        var regName = /(^[a-zA-Z0-9_-]{6,16}$)|(^[\u2E80-\u9FFF]{2,5})/;
+        if(!regName.test(empName)) {
+            alert("用户名不正确，用户名可以是6-16位英文和数字的组合或者2-5位中文");
+            return false;
+        };
+
+        // 2.校验邮箱信息
+        var email = $("#email_add_input").val();
+        var regEmail = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+        if (!regEmail.test(email)) {
+            alert("邮箱格式不正确！请重新输入！")
+            return false;
+        }
+        return true;
+
+    }
+    // 保存员工信息
     $("#emp_save_btn").click(function () {
         // 将模态框中提交的表单数据提交给服务器进行保存
+        // 1.需要给提交到服务器的数据进行校验
+        if(!validate_add_form()) {
+            return false;
+        };
         // 发送Ajax请求保存员工
         $.ajax({
             url:"${APP_PATH}/emp",
