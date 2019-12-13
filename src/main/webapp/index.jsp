@@ -259,6 +259,8 @@
 
     // 点击新增按钮，弹出模态框
     $("#emp_add_modal_btn").click(function () {
+        // 点击新增弹出模态框之前，清空表单数据
+        $("#empAddModal form")[0].reset(); // Jquery没有reset方法，取出dom对象，调用reset方法
         // 发送Ajax请求，查出部门信息显示在下拉列表中
         getDepts();
         // 打开用于新增的模态框，并设置属性，点击其他地方时此模态框不会关闭
@@ -332,7 +334,27 @@
             $(ele).parent().addClass("has-error");
             $(ele).next("span").text(msg);
         }
-    }
+    };
+
+    // 校验用户名是否可用
+    $("#empName_add_input").change(function () {
+        // 发送Ajax请求校验用户名是否可用
+        var empName = this.value;
+        $.ajax({
+            url:"${APP_PATH}/checkuser",
+            data:"empName="+empName,
+            type:"POST",
+            success:function (result) {
+                if(result.code == 200) {
+                    show_validate_msg("#empName_add_input","success","用户名可用");
+                    $("#emp_save_btn").attr("ajax-va","success");
+                } else {
+                    show_validate_msg("#empName_add_input","error","用户名不可用");
+                    $("#emp_save_btn").attr("ajax-va","error");
+                }
+            }
+        })
+    });
 
     // 保存员工信息
     $("#emp_save_btn").click(function () {
@@ -341,7 +363,12 @@
         if (!validate_add_form()) {
             return false;
         };
-        // 发送Ajax请求保存员工
+        // 2.判断之前的Ajax校验是否成功，如校验成功，继续走下一步
+        if($(this).attr("ajax-va")=="error") {
+            return false;
+        }
+
+        // 3.发送Ajax请求保存员工
         $.ajax({
             url: "${APP_PATH}/emp",
             type: "POST",
