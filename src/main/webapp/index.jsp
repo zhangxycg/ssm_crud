@@ -41,6 +41,7 @@
                         <div class="col-sm-10">
                             <input type="text" name="empName" class="form-control" id="empName_add_input"
                                    placeholder="empName">
+                            <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -48,6 +49,7 @@
                         <div class="col-sm-10">
                             <input type="text" name="email" class="form-control" id="email_add_input"
                                    placeholder="email@126.com">
+                            <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -62,7 +64,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group" >
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">deptName</label>
                         <div class="col-sm-4">
                             <!-- 部门不是写死，从数据库查询。部门提交部门id即可 -->
@@ -254,6 +256,7 @@
         var navEle = $("<nav></nav>").append(ul);
         navEle.appendTo("#page_nav_area");
     }
+
     // 点击新增按钮，弹出模态框
     $("#emp_add_modal_btn").click(function () {
         // 发送Ajax请求，查出部门信息显示在下拉列表中
@@ -263,16 +266,17 @@
             backdrop: "static"
         })
     });
+
     // 查出所有的部门信息并显示在下拉列表中
     function getDepts() {
         $.ajax({
-            url:"${APP_PATH}/depts",
+            url: "${APP_PATH}/depts",
             type: "GET",
-            success:function (result) {
+            success: function (result) {
                 // 在下拉列表中显示部门信息
                 // 遍历部门信息
-                $.each(result.extend.depts,function () {
-                    var optionEle = $("<option></option>").append(this.deptName).attr("value",this.deptId);
+                $.each(result.extend.depts, function () {
+                    var optionEle = $("<option></option>").append(this.deptName).attr("value", this.deptId);
                     optionEle.appendTo("#empAddModal select");
                 });
             }
@@ -285,35 +289,65 @@
         var empName = $("#empName_add_input").val();
         // 允许出现a-z、A-Z、0-9、_、- ,长度为6-16位
         var regName = /(^[a-zA-Z0-9_-]{6,16}$)|(^[\u2E80-\u9FFF]{2,5})/;
-        if(!regName.test(empName)) {
-            alert("用户名不正确，用户名可以是6-16位英文和数字的组合或者2-5位中文");
+        if (!regName.test(empName)) {
+            //alert("用户名不正确，用户名可以是6-16位英文和数字的组合或者2-5位中文");
+            // 错误信息显示
+            show_validate_msg("#empName_add_input", "error", "用户名不正确，用户名可以是6-16位英文和数字的组合或者2-5位中文");
+
             return false;
+        } else {
+
+            show_validate_msg("#empName_add_input", "success", "");
         };
 
         // 2.校验邮箱信息
         var email = $("#email_add_input").val();
         var regEmail = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
         if (!regEmail.test(email)) {
-            alert("邮箱格式不正确！请重新输入！")
+            // alert("邮箱格式不正确！请重新输入！")
+            // 清空这个元素之前的样式
+            show_validate_msg("#email_add_input", "error", "邮箱格式不正确！请重新输入！");
+            // $("#email_add_input").parent().addClass("has-error");
+            // $("#email_add_input").next("span").text("邮箱格式不正确！请重新输入！");
             return false;
+        } else {
+            show_validate_msg("#email_add_input", "success", "");
+            // $("#email_add_input").parent().addClass("has-success");
+            // // 清空span中的内容
+            // $("#email_add_input").next("span").text("");
         }
         return true;
-
     }
+
+    // 显示校验结果的提示信息
+    function show_validate_msg(ele, status, msg) {
+        // 清空当前元素的校验状态
+        $(ele).parent().removeClass("has-success has-error");
+        $(ele).next("span").text("");
+        if ("success" == status) {
+            $(ele).parent().addClass("has-success");
+            // 清空span中的内容
+            $(ele).next("span").text(msg);
+        } else if ("error" == status) {
+            $(ele).parent().addClass("has-error");
+            $(ele).next("span").text(msg);
+        }
+    }
+
     // 保存员工信息
     $("#emp_save_btn").click(function () {
         // 将模态框中提交的表单数据提交给服务器进行保存
         // 1.需要给提交到服务器的数据进行校验
-        if(!validate_add_form()) {
+        if (!validate_add_form()) {
             return false;
         };
         // 发送Ajax请求保存员工
         $.ajax({
-            url:"${APP_PATH}/emp",
-            type:"POST",
+            url: "${APP_PATH}/emp",
+            type: "POST",
             // $("#empAddModal form").serialize() 提取要提交的数据
-            data:$("#empAddModal form").serialize(),
-            success:function (result) {
+            data: $("#empAddModal form").serialize(),
+            success: function (result) {
                 // 当员工的数据保存成功以后，需要以下的步骤
                 // 1.关闭模态框
                 $("#empAddModal").modal('hide');
