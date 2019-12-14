@@ -48,6 +48,14 @@
             <version>2.10.1</version>
         </dependency>
 
+        <!-- JSR303数据校验支持 -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>5.4.1.Final</version>
+        </dependency>
+
+
 
         <!-- Spring-Jdbc -->
         <dependency>

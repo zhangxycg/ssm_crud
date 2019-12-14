@@ -368,7 +368,7 @@
     // 保存员工信息
     $("#emp_save_btn").click(function () {
         // 将模态框中提交的表单数据提交给服务器进行保存
-        // 1.需要给提交到服务器的数据进行校验
+        //1.需要给提交到服务器的数据进行校验
         if (!validate_add_form()) {
             return false;
         };
@@ -384,13 +384,26 @@
             // $("#empAddModal form").serialize() 提取要提交的数据
             data: $("#empAddModal form").serialize(),
             success: function (result) {
-                // 当员工的数据保存成功以后，需要以下的步骤
-                // 1.关闭模态框
-                $("#empAddModal").modal('hide');
-                // 2.跳到最后一页，显示保存的数据
-                // 发送Ajax请求，显示最后一页数据即可
-                to_page(totalRecord);
-
+                if (result.code == 200) {
+                    // 当员工的数据保存成功以后，需要以下的步骤
+                    // 1.关闭模态框
+                    $("#empAddModal").modal('hide');
+                    // 2.跳到最后一页，显示保存的数据
+                    // 发送Ajax请求，显示最后一页数据即可
+                    to_page(totalRecord);
+                } else {
+                    // 如果校验失败，显示失败信息
+                    // console.log(result);
+                    // 有那个字段的错误信息就显示那个字段的
+                    if (undefined != result.extend.errorField.email) {
+                        // 显示员工的邮箱错误信息
+                        show_validate_msg("#email_add_input", "error", result.extend.errorField.email);
+                    }
+                    if (undefined != result.extend.errorField.empName) {
+                        // 显示员工的名字错误信息
+                        show_validate_msg("#empName_add_input", "error", result.extend.errorField.empName);
+                    }
+                }
             }
         });
 

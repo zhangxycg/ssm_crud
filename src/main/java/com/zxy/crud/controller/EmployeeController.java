@@ -8,12 +8,17 @@ import com.zxy.crud.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 处理员工CRUD请求
@@ -51,13 +56,29 @@ public class EmployeeController {
 
     /**
      * 员工保存
+     * 1、支持JSR303校验
+     * 2、导入Hibernate-Validator
      * @return
      */
     @RequestMapping(value = "/emp",method = RequestMethod.POST)
     @ResponseBody
-    public Msg saveEmp(Employee employee) {
-        employeeService.saveEmp(employee);
-        return Msg.success();
+    public Msg saveEmp(@Valid Employee employee, BindingResult result) {
+        if (result.hasErrors()) {
+            // 如果校验失败，应该返回失败，在模态框中显示校验失败的错误信息
+            Map<String,Object> map = new HashMap<>();
+            List<FieldError> errors = result.getFieldErrors();
+            for (FieldError fieldError : errors) {
+                System.out.println("错误的字段名：" + fieldError.getField());
+                System.out.println("错误信息：" + fieldError.getDefaultMessage());
+                // 将错误信息添加到map中
+                map.put(fieldError.getField(),fieldError.getDefaultMessage());
+            }
+            return Msg.fail().add("errorFields",map);
+        } else {
+            employeeService.saveEmp(employee);
+            return Msg.success();
+        }
+
     }
 
     @RequestMapping("/emps")
