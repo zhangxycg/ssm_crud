@@ -35,11 +35,17 @@ public class EmployeeController {
     @RequestMapping("/checkuser")
     @ResponseBody
     public Msg checkUser (@RequestParam("empName") String empName) {
+        // 先判断用户名是否是合法的表达式
+        String regName = "(^[a-zA-Z0-9_-]{6,16}$)|(^[\u2E80-\u9FFF]{2,5})";
+        if (!empName.matches(regName)) {
+            return Msg.fail().add("va_msg","用户名必须是6-16位数字和字母的组合或者2-5位中文 ");
+        }
+        // 数据库用户名重复校验
         boolean b =employeeService.checkUser(empName);
         if (b) {
             return Msg.success();
         } else {
-            return Msg.fail();
+            return Msg.fail().add("va_msg","用户名不可用");
         }
     }
 

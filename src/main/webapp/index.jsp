@@ -257,10 +257,19 @@
         navEle.appendTo("#page_nav_area");
     }
 
+    // 清空表单样式及内容
+    function reset_form(ele) {
+        $(ele)[0].reset();
+        // 清空表单样式
+        $(ele).find("*").removeClass("has-error has-success");
+        $(ele).find(".help-block").text("");
+    }
     // 点击新增按钮，弹出模态框
     $("#emp_add_modal_btn").click(function () {
-        // 点击新增弹出模态框之前，清空表单数据
-        $("#empAddModal form")[0].reset(); // Jquery没有reset方法，取出dom对象，调用reset方法
+        // 点击新增弹出模态框之前，清空表单数据以及表单的样式
+        reset_form("#empAddModal form");
+        $("#empAddModal form");
+            // [0].reset(); // Jquery没有reset方法，取出dom对象，调用reset方法
         // 发送Ajax请求，查出部门信息显示在下拉列表中
         getDepts();
         // 打开用于新增的模态框，并设置属性，点击其他地方时此模态框不会关闭
@@ -349,7 +358,7 @@
                     show_validate_msg("#empName_add_input","success","用户名可用");
                     $("#emp_save_btn").attr("ajax-va","success");
                 } else {
-                    show_validate_msg("#empName_add_input","error","用户名不可用");
+                    show_validate_msg("#empName_add_input","error",result.extend.va_msg);
                     $("#emp_save_btn").attr("ajax-va","error");
                 }
             }
