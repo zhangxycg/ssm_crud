@@ -159,11 +159,14 @@
             <table class="table table-hover" id="emps_table">
                 <thead>
                 <tr>
+                    <th>
+                        <input type="checkbox" id="check_all"/>
+                    </th>
                     <th>#</th>
-                    <th>empName</th>
-                    <th>gender</th>
-                    <th>email</th>
-                    <th>deptName</th>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>邮箱</th>
+                    <th>部门</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -222,6 +225,7 @@
         var emps = result.extend.pageInfo.list;
         // 遍历员工数据 index是索引，item是当前对象
         $.each(emps, function (index, item) {
+            var checkBoxTd = $("<td><input type='checkbox' class='check_item'/></td>");
             var empIdTd = $("<td></td>").append(item.empId);
             var empNameTd = $("<td></td>").append(item.empName);
             var genderTd = $("<td></td>").append(item.gender == 'M' ? "男" : "女");
@@ -237,7 +241,8 @@
                 .append("删除");
             var btnTd = $("<td></td>").append(editBtn).append(" ").append(delBtn);
             // append 方法执行完成以后还是返回原来的元素
-            $("<tr></tr>").append(empIdTd)
+            $("<tr></tr>").append(checkBoxTd)
+                .append(empIdTd)
                 .append(empNameTd)
                 .append(genderTd)
                 .append(emailTd)
