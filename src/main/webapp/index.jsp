@@ -54,7 +54,8 @@
                         <label class="col-sm-2 control-label">gender</label>
                         <div class="col-sm-10">
                             <label class="radio-inline">
-                                <input type="radio" name="gender" id="gender1_update_input" value="M" checked="checked"> 男
+                                <input type="radio" name="gender" id="gender1_update_input" value="M" checked="checked">
+                                男
                             </label>
                             <label class="radio-inline">
                                 <input type="radio" name="gender" id="gender2_update_input" value=""> 女
@@ -190,8 +191,8 @@
     </div>
 </div>
 <script type="text/javascript">
-    // 定义全局变量，显示总记录数
-    var totalRecord;
+    // 定义全局变量，显示总记录数和当前页
+    var totalRecord,currentPage;
     // 页面加载完成以后，发送Ajax请求，要到分页数据
     $(function () {
         // 跳到首页
@@ -230,7 +231,7 @@
                 .append($("<span></span>").addClass("glyphicon glyphicon-pencil"))
                 .append("编辑");
             // 为编辑按钮添加一个自定义的属性，来表示当前员工的id
-            editBtn.attr("edit-id",item.empId);
+            editBtn.attr("edit-id", item.empId);
             var delBtn = $("<button></button>").addClass("btn btn-danger btn-sm delete_btn")
                 .append($("<span></span>").addClass("glyphicon glyphicon-trash"))
                 .append("删除");
@@ -252,6 +253,7 @@
         $("#page_info_area").append("当前 " + result.extend.pageInfo.pageNum + " 页，" +
             "总 " + result.extend.pageInfo.pages + " 页，总 " + result.extend.pageInfo.total + " 条记录");
         totalRecord = result.extend.pageInfo.total;
+        currentPage = result.extend.pageInfo.pageNum;
     }
 
     // 解析显示分页导航条
@@ -321,12 +323,13 @@
         $(ele).find("*").removeClass("has-error has-success");
         $(ele).find(".help-block").text("");
     }
+
     // 点击新增按钮，弹出模态框
     $("#emp_add_modal_btn").click(function () {
         // 点击新增弹出模态框之前，清空表单数据以及表单的样式
         reset_form("#empAddModal form");
         $("#empAddModal form");
-            // [0].reset(); // Jquery没有reset方法，取出dom对象，调用reset方法
+        // [0].reset(); // Jquery没有reset方法，取出dom对象，调用reset方法
         // 发送Ajax请求，查出部门信息显示在下拉列表中
         getDepts("#empAddModal select");
         // 打开用于新增的模态框，并设置属性，点击其他地方时此模态框不会关闭
@@ -368,7 +371,8 @@
         } else {
 
             show_validate_msg("#empName_add_input", "success", "");
-        };
+        }
+        ;
 
         // 2.校验邮箱信息
         var email = $("#email_add_input").val();
@@ -409,16 +413,16 @@
         // 发送Ajax请求校验用户名是否可用
         var empName = this.value;
         $.ajax({
-            url:"${APP_PATH}/checkuser",
-            data:"empName="+empName,
-            type:"POST",
-            success:function (result) {
-                if(result.code == 200) {
-                    show_validate_msg("#empName_add_input","success","用户名可用");
-                    $("#emp_save_btn").attr("ajax-va","success");
+            url: "${APP_PATH}/checkuser",
+            data: "empName=" + empName,
+            type: "POST",
+            success: function (result) {
+                if (result.code == 200) {
+                    show_validate_msg("#empName_add_input", "success", "用户名可用");
+                    $("#emp_save_btn").attr("ajax-va", "success");
                 } else {
-                    show_validate_msg("#empName_add_input","error",result.extend.va_msg);
-                    $("#emp_save_btn").attr("ajax-va","error");
+                    show_validate_msg("#empName_add_input", "error", result.extend.va_msg);
+                    $("#emp_save_btn").attr("ajax-va", "error");
                 }
             }
         })
@@ -430,9 +434,10 @@
         //1.需要给提交到服务器的数据进行校验
         if (!validate_add_form()) {
             return false;
-        };
+        }
+        ;
         // 2.判断之前的Ajax校验是否成功，如校验成功，继续走下一步
-        if($(this).attr("ajax-va")=="error") {
+        if ($(this).attr("ajax-va") == "error") {
             return false;
         }
 
@@ -469,12 +474,14 @@
 
     // 1.由于在创建按钮之前绑定了click事件，所以绑定不上
     // 可以在创建按钮的时候绑定事件
-    $(document).on("click",".edit_btn",function () {
+    $(document).on("click", ".edit_btn", function () {
         // alert(1)
         // 查出部门信息，并显示
         getDepts("#empUpdateModal select");
         // 查出员工信息，并显示
         getEmp($(this).attr("edit-id"));
+        // 把员工的id传给模态框的更新按钮
+        $("#emp_update_btn").attr("edit-id", $(this).attr("edit-id"));
         $("#empUpdateModal").modal({
             backdrop: "static"
         })
@@ -482,9 +489,9 @@
 
     function getEmp(id) {
         $.ajax({
-            url:"${APP_PATH}/emp/"+id,
-            type:"GET",
-            success:function (result) {
+            url: "${APP_PATH}/emp/" + id,
+            type: "GET",
+            success: function (result) {
                 // console.log(result)
                 // 员工数据
                 var empData = result.extend.emp;
@@ -492,10 +499,35 @@
                 $("#email_update_input").val(empData.email);
                 $("#empUpdateModal input[name=gender]").val([empData.gender]);
                 $("#empUpdateModal select").val([empData.dId]);
-
             }
         })
     }
+
+    // 点击更新按钮，更新员工信息
+    $("#emp_update_btn").click(function () {
+        // 1.验证邮箱是否合法
+        var email = $("#email_update_input").val();
+        var regEmail = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+        if (!regEmail.test(email)) {
+            show_validate_msg("#email_update_input", "error", "邮箱格式不正确！请重新输入！");
+            return false;
+        } else {
+            show_validate_msg("#email_update_input", "success", "");
+        }
+        // 2.发送Ajax请求，更新保存数据
+        $.ajax({
+            url: "${APP_PATH}/emp/" + $(this).attr("edit-id"),
+            type: "PUT",
+            data: $("#empUpdateModal form").serialize(),
+            success:function (result) {
+                // 1.关闭模态框
+                $("#empUpdateModal").modal("hide");
+                // 2.返回到页面
+                to_page(currentPage)
+            }
+
+        })
+    })
 </script>
 </body>
 </html>
