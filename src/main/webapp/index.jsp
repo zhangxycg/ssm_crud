@@ -554,7 +554,20 @@
                 }
             })
         }
+    });
 
+    // 完成多选框的全选和全不选
+    // 注意： attr获取checked是underfined, 应该使用dom原生的属性prop.   attr获取自定义的属性值
+   $("#check_all").click(function () {
+       $(this).prop("checked");
+       $(".check_item").prop("checked", $(this).prop("checked"));
+   });
+
+   // 给check_item绑定单击事件
+    $(document).on("click",".check_item",function () {
+        // 判断当前选择的元素是否选满
+        var flag = $(".check_item:checked").length == $(".check_item").length;
+        $("#check_all").prop("checked",flag);
     })
 </script>
 </body>
