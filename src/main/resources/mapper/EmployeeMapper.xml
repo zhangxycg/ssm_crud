@@ -99,9 +99,11 @@
         <if test="_parameter != null">
             <include refid="Example_Where_Clause" />
         </if>
-        <if test="orderByClause != null">
-            order by ${orderByClause}
-        </if>
+        <!-- 员工数据根据id进行升序排列 -->
+        order by e.`emp_id`  asc
+<!--        <if test="orderByClause != null">-->
+<!--            order by ${orderByClause}-->
+<!--        </if>-->
     </select>
     <select id="selectByPrimaryKeyWithDept" resultMap="WithDeptResultMap">
         select

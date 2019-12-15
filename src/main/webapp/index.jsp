@@ -37,13 +37,13 @@
             <div class="modal-body">
                 <form class="form-horizontal">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">empName</label>
+                        <label class="col-sm-2 control-label">姓名</label>
                         <div class="col-sm-10">
                             <p class="form-control-static" id="empName_update_static"></p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">email</label>
+                        <label class="col-sm-2 control-label">邮箱</label>
                         <div class="col-sm-10">
                             <input type="text" name="email" class="form-control" id="email_update_input"
                                    placeholder="email@126.com">
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">gender</label>
+                        <label class="col-sm-2 control-label">性别</label>
                         <div class="col-sm-10">
                             <label class="radio-inline">
                                 <input type="radio" name="gender" id="gender1_update_input" value="M" checked="checked">
@@ -64,7 +64,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">deptName</label>
+                        <label class="col-sm-2 control-label">部门</label>
                         <div class="col-sm-4">
                             <!-- 部门不是写死，从数据库查询。部门提交部门id即可 -->
                             <select class="form-control" name="dId">
@@ -93,7 +93,7 @@
             <div class="modal-body">
                 <form class="form-horizontal">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">empName</label>
+                        <label class="col-sm-2 control-label">姓名</label>
                         <div class="col-sm-10">
                             <input type="text" name="empName" class="form-control" id="empName_add_input"
                                    placeholder="empName">
@@ -101,7 +101,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">email</label>
+                        <label class="col-sm-2 control-label">邮箱</label>
                         <div class="col-sm-10">
                             <input type="text" name="email" class="form-control" id="email_add_input"
                                    placeholder="email@126.com">
@@ -109,7 +109,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">gender</label>
+                        <label class="col-sm-2 control-label">性别</label>
                         <div class="col-sm-10">
                             <label class="radio-inline">
                                 <input type="radio" name="gender" id="gender1_add_input" value="M" checked="checked"> 男
@@ -121,7 +121,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">deptName</label>
+                        <label class="col-sm-2 control-label">部门</label>
                         <div class="col-sm-4">
                             <!-- 部门不是写死，从数据库查询。部门提交部门id即可 -->
                             <select class="form-control" name="dId">
