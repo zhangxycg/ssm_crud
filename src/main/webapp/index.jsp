@@ -239,6 +239,8 @@
             var delBtn = $("<button></button>").addClass("btn btn-danger btn-sm delete_btn")
                 .append($("<span></span>").addClass("glyphicon glyphicon-trash"))
                 .append("删除");
+            // 为删除按钮添加一个自定义的属性，来表示当前需要删除员工的id
+            delBtn.attr("del-id",item.empId)
             var btnTd = $("<td></td>").append(editBtn).append(" ").append(delBtn);
             // append 方法执行完成以后还是返回原来的元素
             $("<tr></tr>").append(checkBoxTd)
@@ -532,6 +534,27 @@
             }
 
         })
+    });
+
+    // 单个删除
+    $(document).on("click",".delete_btn",function () {
+        // 弹出是否删除的对话框
+        var empName = $(this).parents("tr").find("td:eq(2)").text();
+        // 获取需要删除员工的id
+        var empId = $(this).attr("del-id");
+        if (confirm("您确认要删除【"+empName+"】吗？")) {
+            // 点击确认，发送ajax请求
+            $.ajax({
+                url:"${APP_PATH}/emp/" + empId,
+                type:"DELETE",
+                success:function (result) {
+                    alert(result.msg);
+                    // 回到当前页
+                    to_page(currentPage);
+                }
+            })
+        }
+
     })
 </script>
 </body>
