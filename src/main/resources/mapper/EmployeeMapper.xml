@@ -2,18 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zxy.crud.dao.EmployeeMapper">
     <resultMap id="BaseResultMap" type="com.zxy.crud.bean.Employee">
-        <id column="emp_id" jdbcType="INTEGER" property="empId" />
-        <result column="emp_name" jdbcType="VARCHAR" property="empName" />
-        <result column="gender" jdbcType="CHAR" property="gender" />
-        <result column="email" jdbcType="VARCHAR" property="email" />
-        <result column="d_id" jdbcType="INTEGER" property="dId" />
+        <id column="emp_id" jdbcType="INTEGER" property="empId"/>
+        <result column="emp_name" jdbcType="VARCHAR" property="empName"/>
+        <result column="gender" jdbcType="CHAR" property="gender"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="d_id" jdbcType="INTEGER" property="dId"/>
     </resultMap>
     <resultMap type="com.zxy.crud.bean.Employee" id="WithDeptResultMap">
-        <id column="emp_id" jdbcType="INTEGER" property="empId" />
-        <result column="emp_name" jdbcType="VARCHAR" property="empName" />
-        <result column="gender" jdbcType="CHAR" property="gender" />
-        <result column="email" jdbcType="VARCHAR" property="email" />
-        <result column="d_id" jdbcType="INTEGER" property="dId" />
+        <id column="emp_id" jdbcType="INTEGER" property="empId"/>
+        <result column="emp_name" jdbcType="VARCHAR" property="empName"/>
+        <result column="gender" jdbcType="CHAR" property="gender"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="d_id" jdbcType="INTEGER" property="dId"/>
         <!-- 指定联合查询出的部门字段的封装 -->
         <association property="department" javaType="com.zxy.crud.bean.Department">
             <id column="dept_id" property="deptId"/>
@@ -38,7 +38,8 @@
                                 </when>
                                 <when test="criterion.listValue">
                                     and ${criterion.condition}
-                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
                                         #{listItem}
                                     </foreach>
                                 </when>
@@ -67,7 +68,8 @@
                                 </when>
                                 <when test="criterion.listValue">
                                     and ${criterion.condition}
-                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
                                         #{listItem}
                                     </foreach>
                                 </when>
@@ -93,21 +95,21 @@
         <if test="distinct">
             distinct
         </if>
-        <include refid="WithDept_Column_List" />
+        <include refid="WithDept_Column_List"/>
         FROM tbl_emp e
         left join tbl_dept d on e.`d_id`=d.`dept_id`
         <if test="_parameter != null">
-            <include refid="Example_Where_Clause" />
+            <include refid="Example_Where_Clause"/>
         </if>
         <!-- 员工数据根据id进行升序排列 -->
-        order by e.`emp_id`  asc
-<!--        <if test="orderByClause != null">-->
-<!--            order by ${orderByClause}-->
-<!--        </if>-->
+        order by e.`emp_id` asc
+        <!--        <if test="orderByClause != null">-->
+        <!--            order by ${orderByClause}-->
+        <!--        </if>-->
     </select>
     <select id="selectByPrimaryKeyWithDept" resultMap="WithDeptResultMap">
         select
-        <include refid="WithDept_Column_List" />
+        <include refid="WithDept_Column_List"/>
         FROM tbl_emp e
         left join tbl_dept d on e.`d_id`=d.`dept_id`
         where emp_id = #{empId,jdbcType=INTEGER}
@@ -119,10 +121,10 @@
         <if test="distinct">
             distinct
         </if>
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from tbl_emp
         <if test="_parameter != null">
-            <include refid="Example_Where_Clause" />
+            <include refid="Example_Where_Clause"/>
         </if>
         <if test="orderByClause != null">
             order by ${orderByClause}
@@ -130,18 +132,18 @@
     </select>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from tbl_emp
         where emp_id = #{empId,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from tbl_emp
-    where emp_id = #{empId,jdbcType=INTEGER}
-  </delete>
+        delete from tbl_emp
+        where emp_id = #{empId,jdbcType=INTEGER}
+    </delete>
     <delete id="deleteByExample" parameterType="com.zxy.crud.bean.EmployeeExample">
         delete from tbl_emp
         <if test="_parameter != null">
-            <include refid="Example_Where_Clause" />
+            <include refid="Example_Where_Clause"/>
         </if>
     </delete>
     <insert id="insert" parameterType="com.zxy.crud.bean.Employee">
@@ -190,7 +192,7 @@
     <select id="countByExample" parameterType="com.zxy.crud.bean.EmployeeExample" resultType="java.lang.Long">
         select count(*) from tbl_emp
         <if test="_parameter != null">
-            <include refid="Example_Where_Clause" />
+            <include refid="Example_Where_Clause"/>
         </if>
     </select>
     <update id="updateByExampleSelective" parameterType="map">
@@ -213,7 +215,7 @@
             </if>
         </set>
         <if test="_parameter != null">
-            <include refid="Update_By_Example_Where_Clause" />
+            <include refid="Update_By_Example_Where_Clause"/>
         </if>
     </update>
     <update id="updateByExample" parameterType="map">
@@ -224,7 +226,7 @@
         email = #{record.email,jdbcType=VARCHAR},
         d_id = #{record.dId,jdbcType=INTEGER}
         <if test="_parameter != null">
-            <include refid="Update_By_Example_Where_Clause" />
+            <include refid="Update_By_Example_Where_Clause"/>
         </if>
     </update>
     <update id="updateByPrimaryKeySelective" parameterType="com.zxy.crud.bean.Employee">
